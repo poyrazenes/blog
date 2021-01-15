@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
+
 class Log extends Base
 {
     const ContentType_User = 1;
@@ -14,11 +16,14 @@ class Log extends Base
     const Action_Login = 'login';
     const Action_Logout = 'logout';
     const Action_InvalidLogin = 'invalid_login';
+    const Action_RefreshToken = 'refresh_token';
     const Action_Approve = 'approve';
 
     protected $table = 'logs';
 
     protected $fillable = ['user_id', 'content_id', 'content_type', 'action', 'content'];
+
+    public $timestamps = false;
 
     protected $dates = ['created_at'];
 
@@ -56,6 +61,7 @@ class Log extends Base
         $log->content_type = $content_type;
         $log->action = $action;
         $log->content = json_encode($content);
+        $log->created_at = Carbon::now();
         $log->save();
     }
 }
