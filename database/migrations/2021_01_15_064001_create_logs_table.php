@@ -20,7 +20,7 @@ class CreateLogsTable extends Migration
             $table->integer('content_type');
             $table->integer('action');
             $table->text('content');
-            $table->timestamps();
+            $table->timestamp('created_at');
 
             $table->foreign('user_id')->references('id')
                 ->on('logs')->cascadeOnDelete();
