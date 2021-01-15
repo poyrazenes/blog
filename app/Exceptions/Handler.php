@@ -4,6 +4,7 @@ namespace App\Exceptions;
 
 use App\Support\Response\Api\Response;
 
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Auth\AuthenticationException;
 use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
@@ -58,8 +59,12 @@ class Handler extends ExceptionHandler
                 $response->setCode(401)->setMessage('Yetkisiz giriş!');
             } elseif ($exception instanceof TooManyRequestsHttpException) {
                 $response->setCode(429)->setMessage('Çok fazla istek gönderildi!');
+            } elseif ($exception instanceof ModelNotFoundException) {
+                $response->setCode(404)->setMessage('Sonuç bulunamadı!');
             } else {
-                $response->setCode(500)->setMessage($exception->getMessage());
+                $response->setCode(500)->setMessage(
+                    get_class($exception) . ': ' . $exception->getMessage()
+                );
             }
 
             return $response->respond();

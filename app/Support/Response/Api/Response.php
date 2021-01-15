@@ -15,7 +15,12 @@ class Response
      * @param $data
      * @param $meta
      */
-    public function __construct(int $code = 200, string $message = '', $data = null, $meta = null)
+    public function __construct(
+        int $code = 200,
+        string $message = 'İşlem Başarılı.',
+        $data = null,
+        $meta = null
+    )
     {
         $this->response = new \stdClass();
 
