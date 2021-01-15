@@ -2,7 +2,14 @@
 
 namespace App\Exceptions;
 
+use App\Support\Response\Api\Response;
+
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Auth\AuthenticationException;
+use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException;
+
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -36,5 +43,28 @@ class Handler extends ExceptionHandler
         $this->reportable(function (Throwable $e) {
             //
         });
+    }
+
+    public function render($request, Throwable $exception)
+    {
+        if ($request->wantsJson()) {
+            $response = new Response();
+
+            if ($exception instanceof NotFoundHttpException) {
+                $response->setCode(404)->setMessage('Sonuç bulunamadı!');
+            } elseif ($exception instanceof MethodNotAllowedHttpException) {
+                $response->setCode(405)->setMessage('İstek metodu yanlış!');
+            } elseif ($exception instanceof AuthenticationException) {
+                $response->setCode(401)->setMessage('Yetkisiz giriş!');
+            } elseif ($exception instanceof TooManyRequestsHttpException) {
+                $response->setCode(429)->setMessage('Çok fazla istek gönderildi!');
+            } else {
+                $response->setCode(500)->setMessage($exception->getMessage());
+            }
+
+            return $response->respond();
+        }
+
+        return parent::render($request, $exception);
     }
 }
