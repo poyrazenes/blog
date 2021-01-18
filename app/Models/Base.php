@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
@@ -40,12 +41,7 @@ class Base extends Model
 
     public static function createLog($user, $model, $content_type, $action, $content = '')
     {
-        $user_id = null;
-        $customer_id = null;
-
-        if ($user) {
-            $user_id = $user->id;
-        }
+        $user_id = $user ? $user->id : null;
 
         $log = new Log();
         $log->user_id = $user_id;
@@ -53,6 +49,7 @@ class Base extends Model
         $log->content_type = $content_type;
         $log->action = $action;
         $log->content = json_encode($content);
+        $log->created_at = Carbon::now();
         $log->save();
     }
 }

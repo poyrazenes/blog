@@ -7,9 +7,29 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Post extends Base
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory;
 
     protected $fillable = ['user_id', 'category_id', 'title', 'content', 'status'];
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        $user = auth()->user();
+        $content_type = Log::ContentType_Post;
+
+        static::created(function ($model) use ($user, $content_type) {
+            $model->createLog($user, $model, $content_type, Log::Action_Create, $model->attributes);
+        });
+
+        static::updated(function ($model) use ($user, $content_type) {
+            $model->createLog($user, $model, $content_type, Log::Action_Update, $model->attributes);
+        });
+
+        static::deleted(function ($model) use ($user, $content_type) {
+            $model->createLog($user, $model, $content_type, Log::Action_Delete);
+        });
+    }
 
     public function user()
     {
