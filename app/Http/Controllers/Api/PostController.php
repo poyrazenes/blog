@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Requests\Api\PostRequest;
 use App\Models\Post;
 use Illuminate\Http\Request;
 
@@ -29,26 +30,43 @@ class PostController extends BaseController
             ->setMeta($meta)->respond();
     }
 
-    public function store(Request $request)
+    public function store(PostRequest $request)
     {
+        $user = auth()->user();
+
+        $data = $request->validated();
+        $data['user_id'] = $user->id;
+
+        Post::create($data);
+
         return $this->response->setCode(201)->respond();
     }
 
     public function show($id)
     {
-        $post = Post::findOrfail((int)$id);
+        $post = Post::findOrfail($id);
 
         return $this->response->setCode(200)->setData($post)
             ->setMeta(['id' => $id])->respond();
     }
 
-    public function update(Request $request, $id)
+    public function update(PostRequest $request, $id)
     {
+        $post = Post::findOrfail($id);
+
+        $data = $request->validated();
+
+        $post->update($data);
+
         return $this->response->setCode(204)->respond();
     }
 
     public function destroy($id)
     {
+        $post = Post::findOrfail($id);
+
+        $post->delete();
+
         return $this->response->setCode(204)->respond();
     }
 }
