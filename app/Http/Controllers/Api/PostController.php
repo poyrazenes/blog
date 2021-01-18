@@ -36,7 +36,7 @@ class PostController extends BaseController
 
     public function show($id)
     {
-        $post = Post::findOrfail($id);
+        $post = Post::findOrfail((int)$id);
 
         return $this->response->setCode(200)->setData($post)
             ->setMeta(['id' => $id])->respond();
@@ -49,6 +49,6 @@ class PostController extends BaseController
 
     public function destroy($id)
     {
-        return $this->response->setCode(200)->respond();
+        return $this->response->setCode(204)->respond();
     }
 }
