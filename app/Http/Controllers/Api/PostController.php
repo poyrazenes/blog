@@ -44,7 +44,7 @@ class PostController extends BaseController
 
     public function show($id)
     {
-        $post = Post::findOrfail($id);
+        $post = Post::with('user', 'category')->findOrfail($id);
 
         return $this->response->setCode(200)->setData($post)
             ->setMeta(['id' => $id])->respond();

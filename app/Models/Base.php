@@ -39,9 +39,11 @@ class Base extends Model
         return $query;
     }
 
-    public static function createLog($user, $model, $content_type, $action, $content = '')
+    public static function createLog($user, $model, $content_type, $action)
     {
         $user_id = $user ? $user->id : null;
+
+        $content = $action != 'delete' ? $model->attributes : '';
 
         $log = new Log();
         $log->user_id = $user_id;

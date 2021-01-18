@@ -22,4 +22,5 @@ Route::middleware('api.auth')->group(function () {
     });
 
     Route::resource('/posts', 'PostController')->except(['create', 'edit']);
+    Route::resource('/categories', 'CategoryController')->only(['index', 'show']);
 });

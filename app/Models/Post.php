@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Post extends Base
 {
@@ -19,11 +18,11 @@ class Post extends Base
         $content_type = Log::ContentType_Post;
 
         static::created(function ($model) use ($user, $content_type) {
-            $model->createLog($user, $model, $content_type, Log::Action_Create, $model->attributes);
+            $model->createLog($user, $model, $content_type, Log::Action_Create);
         });
 
         static::updated(function ($model) use ($user, $content_type) {
-            $model->createLog($user, $model, $content_type, Log::Action_Update, $model->attributes);
+            $model->createLog($user, $model, $content_type, Log::Action_Update);
         });
 
         static::deleted(function ($model) use ($user, $content_type) {
